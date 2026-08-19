@@ -1,0 +1,745 @@
+<title>Dossiê Urologia Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+
+<style>
+  :root{
+    --paper:#F3F5F4;
+    --surface:#FFFFFF;
+    --surface-2:#EAEEED;
+    --ink:#11191B;
+    --ink-soft:#46524F;
+    --ink-mute:#77857F;
+    --rule:#DCE3E1;
+    --rule-strong:#C3CECB;
+    --accent:#0E5257;
+    --accent-soft:#DBEAE9;
+    --signal:#B84329;
+    --signal-soft:#F5E1DB;
+    --gold:#8A6A1F;
+
+    --display:"Fraunces",Georgia,"Times New Roman",serif;
+    --body:"Source Sans 3","Helvetica Neue",Arial,sans-serif;
+    --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+
+    --measure:66ch;
+    --pad:clamp(1.15rem,4vw,3.25rem);
+  }
+
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#0C1214;
+      --surface:#131B1D;
+      --surface-2:#1A2426;
+      --ink:#E9EEEC;
+      --ink-soft:#A8B5B1;
+      --ink-mute:#77857F;
+      --rule:#222E30;
+      --rule-strong:#334245;
+      --accent:#63C2C4;
+      --accent-soft:#11292B;
+      --signal:#E0765B;
+      --signal-soft:#2C1913;
+      --gold:#C9A552;
+    }
+  }
+
+  :root[data-theme="dark"]{
+    --paper:#0C1214;
+    --surface:#131B1D;
+    --surface-2:#1A2426;
+    --ink:#E9EEEC;
+    --ink-soft:#A8B5B1;
+    --ink-mute:#77857F;
+    --rule:#222E30;
+    --rule-strong:#334245;
+    --accent:#63C2C4;
+    --accent-soft:#11292B;
+    --signal:#E0765B;
+    --signal-soft:#2C1913;
+    --gold:#C9A552;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:clamp(1rem,0.97rem + 0.16vw,1.075rem);
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{max-width:78rem;margin:0 auto;padding:0 var(--pad) 5rem;}
+
+  a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px;}
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px;}
+
+  h1,h2,h3,h4{font-family:var(--display);font-weight:600;text-wrap:balance;margin:0;line-height:1.14;}
+
+  .eyebrow{
+    font-family:var(--mono);font-size:0.68rem;font-weight:500;
+    letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-mute);
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead{padding:clamp(2.5rem,7vw,4.75rem) 0 0;}
+  .masthead h1{
+    font-size:clamp(2.5rem,1.5rem + 4.3vw,4.9rem);
+    letter-spacing:-0.022em;margin:1rem 0 0;
+  }
+  .masthead .lede{
+    font-size:clamp(1.1rem,1.03rem + 0.4vw,1.32rem);
+    color:var(--ink-soft);max-width:var(--measure);margin:1.35rem 0 0;
+  }
+
+  .params{
+    display:grid;gap:0;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));
+    border-top:2px solid var(--ink);border-bottom:1px solid var(--rule);
+    margin-top:2.75rem;
+  }
+  .params div{padding:0.95rem 1.15rem 1.05rem;border-right:1px solid var(--rule);}
+  .params div:last-child{border-right:0;}
+  .params dt{font-family:var(--mono);font-size:0.63rem;letter-spacing:0.15em;
+    text-transform:uppercase;color:var(--ink-mute);margin:0 0 0.35rem;}
+  .params dd{margin:0;font-size:0.95rem;font-weight:600;}
+
+  /* ---------- generic section ---------- */
+  section{margin-top:clamp(3.25rem,7vw,5.5rem);}
+  .sec-head{display:flex;align-items:baseline;gap:1rem;
+    border-bottom:1px solid var(--rule-strong);padding-bottom:0.7rem;margin-bottom:2rem;}
+  .sec-head h2{font-size:clamp(1.5rem,1.25rem + 1.1vw,2.1rem);letter-spacing:-0.012em;}
+  .sec-head .eyebrow{margin-left:auto;white-space:nowrap;}
+  .prose{max-width:var(--measure);}
+  .prose p{margin:0 0 1.05rem;}
+  .prose p:last-child{margin-bottom:0;}
+
+  /* ---------- key finding ---------- */
+  .finding{
+    background:var(--surface);border:1px solid var(--rule);
+    border-left:4px solid var(--signal);
+    padding:clamp(1.35rem,3vw,2.25rem);margin-top:2.75rem;
+  }
+  .finding h2{font-size:clamp(1.35rem,1.15rem + 0.9vw,1.85rem);margin-bottom:0.9rem;letter-spacing:-0.01em;}
+  .finding .prose{max-width:72ch;}
+  .contrast{
+    display:flex;flex-wrap:wrap;gap:0.6rem 2.5rem;margin-top:1.5rem;
+    padding-top:1.35rem;border-top:1px solid var(--rule);
+  }
+  .contrast div{display:flex;flex-direction:column;gap:0.15rem;}
+  .contrast b{font-family:var(--mono);font-size:clamp(1.35rem,1.1rem + 1vw,1.9rem);
+    font-weight:600;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;}
+  .contrast .hi{color:var(--accent);}
+  .contrast .lo{color:var(--signal);}
+  .contrast span{font-size:0.8rem;color:var(--ink-mute);line-height:1.35;}
+
+  /* ---------- ranked dossiers ---------- */
+  .dossier{
+    background:var(--surface);border:1px solid var(--rule);
+    margin-bottom:1.5rem;
+  }
+  .d-top{
+    display:grid;grid-template-columns:auto 1fr;gap:0 1.25rem;
+    padding:clamp(1.2rem,2.6vw,1.9rem) clamp(1.2rem,2.6vw,2rem) 0;
+  }
+  .rank{
+    font-family:var(--mono);font-size:clamp(1.6rem,1.3rem + 1.3vw,2.35rem);
+    font-weight:600;color:var(--signal);line-height:1;letter-spacing:-0.03em;
+    font-variant-numeric:tabular-nums;padding-top:0.25rem;
+  }
+  .d-id h3{font-size:clamp(1.3rem,1.1rem + 0.85vw,1.75rem);letter-spacing:-0.012em;}
+  .handle{
+    font-family:var(--mono);font-size:0.86rem;color:var(--ink-soft);
+    display:block;margin-top:0.3rem;word-break:break-all;
+  }
+  .tags{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.8rem;}
+  .tag{
+    font-family:var(--mono);font-size:0.66rem;letter-spacing:0.06em;text-transform:uppercase;
+    background:var(--surface-2);color:var(--ink-soft);
+    padding:0.25rem 0.55rem;border:1px solid var(--rule);
+  }
+  .tag.onco{background:var(--accent-soft);color:var(--accent);border-color:transparent;font-weight:600;}
+
+  .metrics{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));
+    border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+    margin-top:1.4rem;
+  }
+  .metrics div{padding:0.85rem clamp(1.2rem,2.6vw,2rem);border-right:1px solid var(--rule);}
+  .metrics div:last-child{border-right:0;}
+  .m-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.14em;
+    text-transform:uppercase;color:var(--ink-mute);display:block;margin-bottom:0.3rem;}
+  .m-val{font-family:var(--mono);font-size:1.15rem;font-weight:600;
+    letter-spacing:-0.02em;font-variant-numeric:tabular-nums;display:block;}
+  .m-note{font-size:0.75rem;color:var(--ink-mute);display:block;margin-top:0.15rem;line-height:1.3;}
+
+  .bar{height:5px;background:var(--surface-2);margin-top:0.55rem;}
+  .bar span{display:block;height:100%;background:var(--signal);}
+
+  .d-body{padding:clamp(1.2rem,2.6vw,1.9rem) clamp(1.2rem,2.6vw,2rem);
+    display:grid;gap:1.4rem;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));}
+  .field h4{font-family:var(--mono);font-size:0.63rem;font-weight:600;letter-spacing:0.15em;
+    text-transform:uppercase;color:var(--ink-mute);margin-bottom:0.5rem;}
+  .field p{margin:0;font-size:0.96rem;line-height:1.58;}
+
+  .d-foot{
+    display:flex;flex-wrap:wrap;align-items:center;gap:0.75rem 1.5rem;
+    padding:1rem clamp(1.2rem,2.6vw,2rem);
+    border-top:1px solid var(--rule);background:var(--surface-2);
+  }
+  .ig-link{font-family:var(--mono);font-size:0.85rem;font-weight:500;
+    display:inline-flex;align-items:center;gap:0.5rem;word-break:break-all;}
+  .ig-link::before{content:"↗";font-size:0.95em;}
+  .verdict{font-size:0.85rem;color:var(--ink-soft);font-style:italic;margin-left:auto;}
+
+  /* ---------- tables ---------- */
+  .t-scroll{overflow-x:auto;border:1px solid var(--rule);background:var(--surface);}
+  table{border-collapse:collapse;width:100%;min-width:44rem;font-size:0.92rem;}
+  th,td{text-align:left;padding:0.72rem 0.95rem;border-bottom:1px solid var(--rule);vertical-align:top;}
+  thead th{
+    font-family:var(--mono);font-size:0.62rem;letter-spacing:0.13em;text-transform:uppercase;
+    color:var(--ink-mute);font-weight:600;background:var(--surface-2);
+    border-bottom:1px solid var(--rule-strong);white-space:nowrap;
+  }
+  tbody tr:last-child td{border-bottom:0;}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600;}
+  td.hand{font-family:var(--mono);font-size:0.83rem;word-break:break-all;}
+
+  /* ---------- recommendations ---------- */
+  .recs{display:grid;gap:1.15rem;grid-template-columns:repeat(auto-fit,minmax(19rem,1fr));}
+  .rec{background:var(--surface);border:1px solid var(--rule);padding:1.3rem 1.4rem;}
+  .rec .eyebrow{color:var(--accent);}
+  .rec h3{font-size:1.16rem;margin:0.55rem 0 0.6rem;letter-spacing:-0.008em;}
+  .rec p{margin:0;font-size:0.93rem;color:var(--ink-soft);line-height:1.56;}
+
+  /* ---------- notes ---------- */
+  .note{
+    background:var(--signal-soft);border:1px solid var(--rule);
+    padding:1.2rem 1.35rem;margin-top:1.75rem;
+  }
+  .note p{margin:0;font-size:0.92rem;line-height:1.58;}
+  .note strong{color:var(--signal);}
+
+  details{border:1px solid var(--rule);background:var(--surface);padding:0 1.35rem;margin-top:1.5rem;}
+  summary{cursor:pointer;font-family:var(--mono);font-size:0.75rem;letter-spacing:0.1em;
+    text-transform:uppercase;padding:1rem 0;color:var(--ink-soft);}
+  details[open] summary{border-bottom:1px solid var(--rule);margin-bottom:1rem;}
+  details .prose{padding-bottom:1.35rem;font-size:0.93rem;}
+  details ul{margin:0 0 1rem;padding-left:1.15rem;}
+  details li{margin-bottom:0.5rem;}
+
+  footer{margin-top:4rem;padding-top:1.5rem;border-top:2px solid var(--ink);
+    display:flex;flex-wrap:wrap;gap:0.5rem 2rem;font-size:0.82rem;color:var(--ink-mute);}
+
+  @media (max-width:34rem){
+    .d-top{grid-template-columns:1fr;gap:0.5rem;}
+    .rank{padding-top:0;}
+    .verdict{margin-left:0;}
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Inteligência competitiva · Marketing médico</p>
+    <h1>Quem manda na urologia do Instagram brasileiro</h1>
+    <p class="lede">Os seis perfis de maior alcance nacional — quem são, quanto pesam, o que comunicam e como publicam. Preparado para embasar uma decisão de investimento em conteúdo.</p>
+
+    <dl class="params">
+      <div><dt>Data do levantamento</dt><dd>19 ago 2026</dd></div>
+      <div><dt>Escopo</dt><dd>Instagram · Brasil</dd></div>
+      <div><dt>Perfis triados</dt><dd>60+</dd></div>
+      <div><dt>Ranqueados</dt><dd>6 + 2 destaques</dd></div>
+      <div><dt>Confiança dos dados</dt><dd>Alta / Média</dd></div>
+    </dl>
+  </header>
+
+  <div class="finding">
+    <p class="eyebrow">Achado principal</p>
+    <h2>A audiência da urologia não está na oncologia — está na saúde sexual masculina</h2>
+    <div class="prose">
+      <p>Os seis maiores urologistas do Instagram brasileiro comunicam, sem exceção, <strong>medicina sexual e andrologia</strong>: disfunção erétil, testosterona, vasectomia, prótese peniana, libido. Nenhum construiu audiência de massa falando de câncer.</p>
+      <p>O maior perfil de <strong>uro-oncologia</strong> do país que localizei tem cerca de 15 mil seguidores. O maior perfil de saúde sexual tem aproximadamente 690 mil — <strong>46 vezes mais</strong>. Isso não significa que oncologia não converte: significa que ela não gera volume de audiência sozinha, e que o espaço está praticamente vazio.</p>
+    </div>
+    <div class="contrast">
+      <div><b class="hi">~690 mil</b><span>Maior perfil de saúde sexual masculina</span></div>
+      <div><b class="lo">~15 mil</b><span>Maior perfil de uro-oncologia</span></div>
+      <div><b>46×</b><span>Diferença de audiência entre os dois nichos</span></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="sec-head">
+      <h2>Os seis principais</h2>
+      <p class="eyebrow">Ordenado por seguidores no Instagram</p>
+    </div>
+
+    <!-- 01 -->
+    <article class="dossier">
+      <div class="d-top">
+        <div class="rank">01</div>
+        <div class="d-id">
+          <h3>Dr. Eduardo Miranda</h3>
+          <span class="handle">@omedicodoshomens · Fortaleza/CE · CRM-CE 11133 · RQE 7316</span>
+          <div class="tags">
+            <span class="tag">Medicina sexual</span>
+            <span class="tag">Multiplataforma</span>
+            <span class="tag">Infoproduto</span>
+            <span class="tag">Doutorado USP</span>
+          </div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div><span class="m-label">Seguidores IG</span><span class="m-val">~690 mil</span><span class="m-note">Fontes variam entre 610 e 750 mil</span><div class="bar"><span style="width:100%"></span></div></div>
+        <div><span class="m-label">YouTube</span><span class="m-val">280–350 mil</span><span class="m-note">Inscritos</span></div>
+        <div><span class="m-label">Engajamento</span><span class="m-val">Alto</span><span class="m-note">Estimado — ver metodologia</span></div>
+        <div><span class="m-label">Contas satélite</span><span class="m-val">46 mil + 13 mil</span><span class="m-note">@dr.eduardomiranda e @dr.eduardo.miranda</span></div>
+      </div>
+      <div class="d-body">
+        <div class="field">
+          <h4>Foco e posicionamento</h4>
+          <p>Medicina sexual masculina como território exclusivo: disfunção erétil, ejaculação precoce, libido, testosterona, performance e autoestima. Assina como "O Médico dos Homens" — a marca vem antes do nome, o que é raro entre médicos e explica boa parte da escala.</p>
+        </div>
+        <div class="field">
+          <h4>Como comunica</h4>
+          <p>Tom direto, sem eufemismo, linguagem de vestiário aplicada a tema médico. Credenciais pesadas (doutorado USP, formação no Memorial Sloan Kettering e Cornell) sustentam a autoridade por trás da linguagem informal.</p>
+        </div>
+        <div class="field">
+          <h4>Formato e frequência</h4>
+          <p>Reels curtos no Instagram como motor de alcance, vídeos longos e lives no YouTube para aprofundamento, TikTok replicando o corte curto. Cadência alta e diária, típica de operação com equipe de conteúdo dedicada.</p>
+        </div>
+        <div class="field">
+          <h4>Modelo de negócio</h4>
+          <p>Monetiza a audiência além do consultório: criou o treinamento "Doppler Class" e uma pós-graduação em Medicina Sexual Masculina (MeSH). Vende para médicos, não só para pacientes — o que muda completamente a economia do perfil.</p>
+        </div>
+      </div>
+      <div class="d-foot">
+        <a class="ig-link" href="https://www.instagram.com/omedicodoshomens/">instagram.com/omedicodoshomens</a>
+        <span class="verdict">O benchmark de escala da categoria.</span>
+      </div>
+    </article>
+
+    <!-- 02 -->
+    <article class="dossier">
+      <div class="d-top">
+        <div class="rank">02</div>
+        <div class="d-id">
+          <h3>Dr. Rafael de Moraes Siqueira</h3>
+          <span class="handle">@drrafaelsiqueira · Rio de Janeiro/RJ · CRM 52.83767-9 · RQE 48711</span>
+          <div class="tags">
+            <span class="tag">Andrologia</span>
+            <span class="tag">Vasectomia</span>
+            <span class="tag">Didático</span>
+            <span class="tag">Alta eficiência</span>
+          </div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div><span class="m-label">Seguidores IG</span><span class="m-val">621 mil</span><div class="bar"><span style="width:95%"></span></div></div>
+        <div><span class="m-label">Publicações</span><span class="m-val">883</span><span class="m-note">No feed</span></div>
+        <div><span class="m-label">Eficiência</span><span class="m-val">703</span><span class="m-note">Seguidores por publicação</span></div>
+        <div><span class="m-label">Engajamento</span><span class="m-val">Alto</span><span class="m-note">Estimado — ver metodologia</span></div>
+      </div>
+      <div class="d-body">
+        <div class="field">
+          <h4>Foco e posicionamento</h4>
+          <p>Urologia clínica e cirúrgica, andrologia, infertilidade masculina e disfunções sexuais. O carro-chefe é vasectomia em consultório com sedação — mais de 300 realizadas — e reversão de vasectomia.</p>
+        </div>
+        <div class="field">
+          <h4>Como comunica</h4>
+          <p>A bio resume a estratégia: <em>"Urologia de um jeito que todo mundo entende."</em> Aposta em didática e desmistificação, não em choque. É o perfil mais "professor" do topo do ranking, e o que menos depende de apelo sexual explícito.</p>
+        </div>
+        <div class="field">
+          <h4>Formato e frequência</h4>
+          <p>883 publicações para 621 mil seguidores — <strong>703 seguidores conquistados por post</strong>, a segunda melhor eficiência do grupo. Publica menos e acerta mais. Espelha o conteúdo no TikTok.</p>
+        </div>
+        <div class="field">
+          <h4>Modelo de negócio</h4>
+          <p>Sócio-fundador da clínica MedSoul, com consultório próprio em Ipanema. Vende cursos e procedimentos estéticos além das consultas. Já foi convidado em programas de mídia nacional.</p>
+        </div>
+      </div>
+      <div class="d-foot">
+        <a class="ig-link" href="https://www.instagram.com/drrafaelsiqueira/">instagram.com/drrafaelsiqueira</a>
+        <span class="verdict">O modelo mais replicável para quem quer autoridade sem apelação.</span>
+      </div>
+    </article>
+
+    <!-- 03 -->
+    <article class="dossier">
+      <div class="d-top">
+        <div class="rank">03</div>
+        <div class="d-id">
+          <h3>Dr. Guilherme Braga</h3>
+          <span class="handle">@drguilhermebraga · Rio de Janeiro/RJ · RQE 118315</span>
+          <div class="tags">
+            <span class="tag">Andrologia</span>
+            <span class="tag">TV aberta</span>
+            <span class="tag">Estética íntima</span>
+            <span class="tag">YouTube semanal</span>
+          </div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div><span class="m-label">Seguidores IG</span><span class="m-val">230 mil</span><div class="bar"><span style="width:58%"></span></div></div>
+        <div><span class="m-label">TikTok</span><span class="m-val">181 mil</span><span class="m-note">2,2 mi de curtidas acumuladas</span></div>
+        <div><span class="m-label">Publicações</span><span class="m-val">1.216</span><span class="m-note">189 seguidores por post</span></div>
+        <div><span class="m-label">Engajamento</span><span class="m-val">Alto</span><span class="m-note">~12 curtidas por seguidor no TikTok</span></div>
+      </div>
+      <div class="d-body">
+        <div class="field">
+          <h4>Foco e posicionamento</h4>
+          <p>Disfunções sexuais masculinas e estética genital: disfunção erétil, ejaculação precoce, injeções penianas, aumento peniano. Membro da ISSM, SLAMS e SBU — usa os títulos internacionais como diferencial num nicho saturado.</p>
+        </div>
+        <div class="field">
+          <h4>Como comunica</h4>
+          <p>Registro leve e bem-humorado, confortável com o constrangimento do tema. É o único do grupo com <strong>penetração em TV aberta</strong>: participou do Lady Night, da Tata Werneck (Multishow/Globoplay), falando de aumento peniano.</p>
+        </div>
+        <div class="field">
+          <h4>Formato e frequência</h4>
+          <p>Ecossistema completo: Reels no Instagram, cortes no TikTok e vídeos educativos semanais no YouTube. 1.216 publicações indicam cadência sustentada por anos, não campanha pontual.</p>
+        </div>
+        <div class="field">
+          <h4>Diferencial</h4>
+          <p>Declara atuar também por rádios comunitárias e grupos de WhatsApp — distribuição fora da bolha digital, chegando a público de menor renda e fora dos grandes centros.</p>
+        </div>
+      </div>
+      <div class="d-foot">
+        <a class="ig-link" href="https://www.instagram.com/drguilhermebraga/">instagram.com/drguilhermebraga</a>
+        <span class="verdict">Prova que mídia tradicional ainda multiplica audiência digital.</span>
+      </div>
+    </article>
+
+    <!-- 04 -->
+    <article class="dossier">
+      <div class="d-top">
+        <div class="rank">04</div>
+        <div class="d-id">
+          <h3>Dr. Pedro Junqueira</h3>
+          <span class="handle">@drpedrojunqueira · Goiânia/GO</span>
+          <div class="tags">
+            <span class="tag onco">Perfil mais próximo do seu cliente</span>
+            <span class="tag">Cirurgia robótica</span>
+            <span class="tag">Próstata</span>
+            <span class="tag">Cálculo renal</span>
+          </div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div><span class="m-label">Seguidores IG</span><span class="m-val">83 mil</span><div class="bar"><span style="width:35%"></span></div></div>
+        <div><span class="m-label">Publicações</span><span class="m-val">668</span><span class="m-note">124 seguidores por post</span></div>
+        <div><span class="m-label">Engajamento</span><span class="m-val">Médio-alto</span><span class="m-note">Estimado — ver metodologia</span></div>
+        <div><span class="m-label">Experiência</span><span class="m-val">~20 anos</span><span class="m-note">De prática médica</span></div>
+      </div>
+      <div class="d-body">
+        <div class="field">
+          <h4>Foco e posicionamento</h4>
+          <p><strong>O único do top 6 que não é andrologista.</strong> Comunica cirurgia robótica, cirurgia a laser, doenças da próstata e cálculo renal — território cirúrgico e oncológico, exatamente o do seu cliente.</p>
+        </div>
+        <div class="field">
+          <h4>Como comunica</h4>
+          <p>Tom professoral e técnico-acessível, ancorado em duas décadas de experiência. Menos apelo viral, mais construção de confiança para decisão cirúrgica — que é uma decisão de alto valor e alta consideração.</p>
+        </div>
+        <div class="field">
+          <h4>Formato e frequência</h4>
+          <p>Canal no YouTube "Urologia e Saúde" com vídeos longos e <strong>transmissões ao vivo</strong> — formato que gera vínculo e permite tirar dúvidas em tempo real. 668 posts no feed, cadência moderada e consistente.</p>
+        </div>
+        <div class="field">
+          <h4>Por que ele importa aqui</h4>
+          <p>Prova que dá para chegar a 83 mil seguidores sem falar de sexo, a partir de Goiânia. É o caso que derruba a objeção de que só andrologia escala e de que só o eixo Rio–São Paulo funciona.</p>
+        </div>
+      </div>
+      <div class="d-foot">
+        <a class="ig-link" href="https://www.instagram.com/drpedrojunqueira/">instagram.com/drpedrojunqueira</a>
+        <span class="verdict">O caso mais relevante para um urologista de foco oncológico.</span>
+      </div>
+    </article>
+
+    <!-- 05 -->
+    <article class="dossier">
+      <div class="d-top">
+        <div class="rank">05</div>
+        <div class="d-id">
+          <h3>Dr. Felipe Rocha</h3>
+          <span class="handle">@urofeliperocha · Rio Grande do Sul e Santa Catarina · CRM-RS 30682 · RQE 30800</span>
+          <div class="tags">
+            <span class="tag">TikTok-first</span>
+            <span class="tag">Prótese peniana</span>
+            <span class="tag">Máxima eficiência</span>
+            <span class="tag">Verificado</span>
+          </div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div><span class="m-label">Seguidores IG</span><span class="m-val">77 mil</span><div class="bar"><span style="width:33%"></span></div></div>
+        <div><span class="m-label">TikTok</span><span class="m-val">861 mil</span><span class="m-note">20,8 mi de curtidas acumuladas</span></div>
+        <div><span class="m-label">Publicações IG</span><span class="m-val">94</span><span class="m-note">819 seguidores por post — o melhor do grupo</span></div>
+        <div><span class="m-label">Engajamento</span><span class="m-val">Muito alto</span><span class="m-note">~24 curtidas por seguidor no TikTok</span></div>
+      </div>
+      <div class="d-body">
+        <div class="field">
+          <h4>Foco e posicionamento</h4>
+          <p>Nicho fechado e cirúrgico: prótese peniana, disfunção erétil e estética genital masculina. Procedimento de altíssimo ticket, com volume de audiência trabalhando a favor de pouquíssimas conversões necessárias.</p>
+        </div>
+        <div class="field">
+          <h4>Como comunica</h4>
+          <p>Vídeo curto e vertical, linguagem de rede social antes de linguagem de consultório. Segue apenas 9 contas — sinal de perfil operado como canal de mídia, não como rede pessoal.</p>
+        </div>
+        <div class="field">
+          <h4>Formato e frequência</h4>
+          <p>Estratégia invertida em relação aos colegas: <strong>apenas 94 posts no Instagram</strong> sustentando 77 mil seguidores, enquanto o volume pesado vive no TikTok, com 861 mil. Usa o TikTok como máquina de alcance e o Instagram como vitrine curada.</p>
+        </div>
+        <div class="field">
+          <h4>Leitura estratégica</h4>
+          <p>É a maior eficiência de conteúdo do levantamento: 819 seguidores por publicação. Mostra que canal certo pesa mais que volume — 94 posts bem colocados superam 2.888 mal distribuídos.</p>
+        </div>
+      </div>
+      <div class="d-foot">
+        <a class="ig-link" href="https://www.instagram.com/urofeliperocha/">instagram.com/urofeliperocha</a>
+        <span class="verdict">Menor esforço por seguidor conquistado de todo o grupo.</span>
+      </div>
+    </article>
+
+    <!-- 06 -->
+    <article class="dossier">
+      <div class="d-top">
+        <div class="rank">06</div>
+        <div class="d-id">
+          <h3>Dr. Eduardo Bertero</h3>
+          <span class="handle">@dr.eduardo.bertero · São Paulo/SP · CRM-SP 57666 · RQE 89883</span>
+          <div class="tags">
+            <span class="tag">Prótese peniana</span>
+            <span class="tag">Peyronie</span>
+            <span class="tag">Alto volume</span>
+            <span class="tag">25+ anos</span>
+          </div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div><span class="m-label">Seguidores IG</span><span class="m-val">65 mil</span><div class="bar"><span style="width:31%"></span></div></div>
+        <div><span class="m-label">Publicações</span><span class="m-val">1.468</span><span class="m-note">44 seguidores por post</span></div>
+        <div><span class="m-label">Engajamento</span><span class="m-val">Médio</span><span class="m-note">Volume alto, eficiência baixa</span></div>
+        <div><span class="m-label">Experiência</span><span class="m-val">25+ anos</span><span class="m-note">Formação na Boston University</span></div>
+      </div>
+      <div class="d-body">
+        <div class="field">
+          <h4>Foco e posicionamento</h4>
+          <p>Cirurgia reconstrutiva peniana: próteses maleáveis e infláveis, doença de Peyronie, curvatura peniana, alongamento e espessamento, vasectomia sem bisturi e preenchimento peniano.</p>
+        </div>
+        <div class="field">
+          <h4>Como comunica</h4>
+          <p>Conteúdo frontal, com títulos deliberadamente provocativos para prender o scroll. A bio é uma lista seca de procedimentos e o telefone — comunicação orientada a captação direta, não a construção de marca.</p>
+        </div>
+        <div class="field">
+          <h4>Formato e frequência</h4>
+          <p>O maior volume de publicações do top 6: <strong>1.468 posts</strong>. Mistura carrossel e Reels, com presença também no Facebook e YouTube. Cadência alta e ininterrupta.</p>
+        </div>
+        <div class="field">
+          <h4>Alerta de leitura</h4>
+          <p>1.468 publicações para 65 mil seguidores dão 44 seguidores por post — <strong>a menor eficiência entre os seis</strong>. É o retrato de que constância sozinha não gera escala se o formato não acompanhar.</p>
+        </div>
+      </div>
+      <div class="d-foot">
+        <a class="ig-link" href="https://www.instagram.com/dr.eduardo.bertero/">instagram.com/dr.eduardo.bertero</a>
+        <span class="verdict">Contraexemplo útil: volume não substitui formato.</span>
+      </div>
+    </article>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Dois destaques fora do ranking</h2>
+      <p class="eyebrow">Relevantes pela estratégia, não pelo tamanho</p>
+    </div>
+
+    <article class="dossier">
+      <div class="d-top">
+        <div class="rank" style="color:var(--accent)">★</div>
+        <div class="d-id">
+          <h3>Dr. Roberto Rossi Neto</h3>
+          <span class="handle">@uro.rossi · Salvador/BA</span>
+          <div class="tags">
+            <span class="tag onco">Faz uro-oncologia</span>
+            <span class="tag">Humor</span>
+            <span class="tag">Viralização extrema</span>
+            <span class="tag">Doutorado na Alemanha</span>
+          </div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div><span class="m-label">Seguidores IG</span><span class="m-val">~25 mil</span><span class="m-note">Base pequena</span></div>
+        <div><span class="m-label">Maior vídeo</span><span class="m-val">3,6 mi</span><span class="m-note">Visualizações no Instagram · 1 mi no TikTok</span></div>
+        <div><span class="m-label">Índice de viralização</span><span class="m-val">144×</span><span class="m-note">Views do maior vídeo sobre a base de seguidores</span></div>
+        <div><span class="m-label">Exames de próstata</span><span class="m-val">20.000+</span><span class="m-note">Realizados na carreira</span></div>
+      </div>
+      <div class="d-body">
+        <div class="field">
+          <h4>Por que ele é o caso mais importante deste relatório</h4>
+          <p>É o único perfil relevante que <strong>faz uro-oncologia e mesmo assim viraliza</strong>. Especialista em cirurgia robótica, prótese peniana, esfíncter urinário e uro-oncologia, com doutorado pela Universidade de Duisburg-Essen, na Alemanha.</p>
+        </div>
+        <div class="field">
+          <h4>Como comunica</h4>
+          <p>Usa objetos como metáfora — uma rosquinha, uma banana, uma mesa de bolos — para falar de exame de toque e saúde íntima com humor e duplo sentido. O humor é a isca; a mensagem entregue é rastreamento de câncer de próstata.</p>
+        </div>
+        <div class="field">
+          <h4>O que ele diz sobre a própria estratégia</h4>
+          <p><em>"Eu ajo nos vídeos como ajo com meus pacientes no consultório. Não criei personagem."</em> — a autenticidade é declarada como o método, não como acaso. Foi entrevistado por veículos baianos justamente por esse contraste.</p>
+        </div>
+        <div class="field">
+          <h4>Aplicação direta ao seu cliente</h4>
+          <p>Ele resolve o dilema central: prova que dá para usar humor e saúde masculina como porta de entrada e ainda assim entregar a mensagem oncológica. Com 25 mil seguidores alcançou 3,6 milhões de pessoas — <strong>alcance não depende de base grande</strong>.</p>
+        </div>
+      </div>
+      <div class="d-foot">
+        <a class="ig-link" href="https://www.instagram.com/uro.rossi/">instagram.com/uro.rossi</a>
+        <span class="verdict">O modelo que eu recomendaria estudar primeiro.</span>
+      </div>
+    </article>
+
+    <article class="dossier">
+      <div class="d-top">
+        <div class="rank" style="color:var(--accent)">★</div>
+        <div class="d-id">
+          <h3>Dr. Danilo Galante Moreno</h3>
+          <span class="handle">@drdanilogalante · São Paulo/SP · CRM-SP 119.721 · RQE 63.998</span>
+          <div class="tags">
+            <span class="tag">Doutorado USP</span>
+            <span class="tag">Sexologia</span>
+            <span class="tag onco">Tumores</span>
+            <span class="tag">Maior volume</span>
+          </div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div><span class="m-label">Seguidores IG</span><span class="m-val">63 mil</span><span class="m-note">A um passo do top 6</span></div>
+        <div><span class="m-label">Publicações</span><span class="m-val">2.888</span><span class="m-note">O mais prolífico do levantamento</span></div>
+        <div><span class="m-label">Eficiência</span><span class="m-val">22</span><span class="m-note">Seguidores por post — a menor de todas</span></div>
+        <div><span class="m-label">Engajamento</span><span class="m-val">Médio-baixo</span><span class="m-note">Estimado — ver metodologia</span></div>
+      </div>
+      <div class="d-body">
+        <div class="field">
+          <h4>Foco e posicionamento</h4>
+          <p>O leque mais amplo do grupo: infertilidade, sexologia, cálculo urinário e tumores. Formado pela UNIFESP, título pela UNESP, pós em cirurgia robótica pelo Oswaldo Cruz e doutorado pela USP.</p>
+        </div>
+        <div class="field">
+          <h4>Como comunica</h4>
+          <p>Divulgação científica acessível, com apoio em estudos e dados. Também escreve para portais de saúde de grande circulação, como Minha Vida e Ativo Saúde — presença editorial que reforça autoridade fora da própria rede.</p>
+        </div>
+        <div class="field">
+          <h4>A lição embutida</h4>
+          <p>2.888 publicações para 63 mil seguidores. Comparado ao Dr. Felipe Rocha — 94 posts para 77 mil — a diferença de eficiência é de <strong>37 vezes</strong>. É o argumento mais forte contra estratégia baseada em volume.</p>
+        </div>
+        <div class="field">
+          <h4>Diagnóstico</h4>
+          <p>Escopo amplo demais dilui o posicionamento. Quem fala de tudo em urologia não é lembrado por nada específico — risco direto para um cliente que quer ser reconhecido como oncologista.</p>
+        </div>
+      </div>
+      <div class="d-foot">
+        <a class="ig-link" href="https://www.instagram.com/drdanilogalante/">instagram.com/drdanilogalante</a>
+        <span class="verdict">Alerta sobre diluição de posicionamento.</span>
+      </div>
+    </article>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>O vácuo da uro-oncologia</h2>
+      <p class="eyebrow">Maiores perfis do nicho do seu cliente</p>
+    </div>
+    <div class="prose" style="margin-bottom:1.5rem">
+      <p>Estes são os urologistas com foco oncológico declarado e maior presença que localizei. Note a ordem de grandeza: <strong>nenhum passa de 15 mil seguidores</strong>, incluindo nomes de peso absoluto na cirurgia robótica brasileira.</p>
+    </div>
+    <div class="t-scroll">
+      <table>
+        <thead>
+          <tr><th>Nome</th><th>Perfil</th><th>Seguidores</th><th>Posts</th><th>Credencial e foco</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Dr. Bruno Benigno</td><td class="hand">@dr_benigno</td><td class="num">15 mil</td><td class="num">996</td><td>Hospital Alemão Oswaldo Cruz. Próstata, rim, bexiga e testículo; robótica, HoLEP e terapia focal (HIFU).</td></tr>
+          <tr><td>Dr. Rafael Ferreira Coelho</td><td class="hand">@coelhouro__urologia</td><td class="num">14 mil</td><td class="num">962</td><td>Mais de 6.000 cirurgias robóticas. Sírio-Libanês, Einstein e Nove de Julho. Referência na América Latina.</td></tr>
+          <tr><td>Dr. Érico Diógenes</td><td class="hand">@drericodiogenes</td><td class="num">12 mil</td><td class="num">—</td><td>Doutorado pela FMUSP. Pioneiro em robótica e laser HoLEP/ThuLEP.</td></tr>
+          <tr><td>Dr. Daniel Carvalho</td><td class="hand">@drdanielcarvalhourologia</td><td class="num">10 mil</td><td class="num">—</td><td>Hospital do Câncer de Muriaé. Robótica para próstata, rim e bexiga.</td></tr>
+          <tr><td>Dr. Felipe Lott</td><td class="hand">@lottfelipe</td><td class="num">2,8 mil</td><td class="num">—</td><td>Preceptor do fellowship do INCA. Primeiro a fazer prostatectomia robótica no Rio.</td></tr>
+          <tr><td>Dr. Marcelo Langer Wroclawski</td><td class="hand">@marcelolw</td><td class="num">2,2 mil</td><td class="num">168</td><td>BP e Einstein. Fellowship em uro-oncologia, mestrado na área.</td></tr>
+          <tr><td>Dr. José Alexandre Pedrosa</td><td class="hand">@drjosealexandrepedrosa</td><td class="num">1,6 mil</td><td class="num">38</td><td>INCA. Instrutor de cirurgia robótica.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <p><strong>Leitura para a decisão de investimento:</strong> um dos cirurgiões robóticos mais experientes da América Latina tem 14 mil seguidores. Isso significa que <em>autoridade médica não se converte automaticamente em audiência</em> — o que converte é produção de conteúdo consistente em formato nativo da plataforma. A boa notícia: a barreira de entrada nesse nicho é baixíssima. Com execução séria, seu cliente entra no top 3 nacional de uro-oncologia no Instagram em prazo curto.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Recomendações</h2>
+      <p class="eyebrow">O que os dados sustentam</p>
+    </div>
+    <div class="recs">
+      <div class="rec">
+        <p class="eyebrow">Estratégia central</p>
+        <h3>Porta de entrada larga, conversão estreita</h3>
+        <p>Nenhum perfil escalou falando só de câncer. Use saúde masculina ampla — próstata aumentada, jato fraco, testosterona, vasectomia — como captação de audiência, e converta essa base para a autoridade oncológica. É o modelo do Dr. Roberto Rossi, e o único que combina alcance e oncologia.</p>
+      </div>
+      <div class="rec">
+        <p class="eyebrow">Formato</p>
+        <h3>Reels de 30 a 60 segundos, 4 a 5 por semana</h3>
+        <p>Reels bem roteirizados entregam alcance de 5 a 10 vezes maior que post estático no mesmo perfil. Quatro a cinco por semana é o piso praticado por quem cresce. O algoritmo hoje pesa comentário, salvamento, compartilhamento e tempo de exibição acima de curtida.</p>
+      </div>
+      <div class="rec">
+        <p class="eyebrow">Canal</p>
+        <h3>TikTok gera volume, Instagram converte</h3>
+        <p>Dr. Felipe Rocha tem 861 mil no TikTok e 77 mil no Instagram com apenas 94 posts. Dr. Guilherme Braga repete o padrão. Produzir uma vez e distribuir nos dois canais é o melhor retorno por real investido em produção.</p>
+      </div>
+      <div class="rec">
+        <p class="eyebrow">Calendário</p>
+        <h3>Novembro Azul é a única janela garantida</h3>
+        <p>É o único mês em que TV, rádio e podcasts procuram urologistas ativamente — de Rádio Senado a emissoras regionais. Para um oncologista é a janela natural. Exige preparo de 60 a 90 dias: pauta pronta, material de imprensa e agenda aberta.</p>
+      </div>
+      <div class="rec">
+        <p class="eyebrow">Posicionamento</p>
+        <h3>Um território, não um catálogo</h3>
+        <p>Os perfis que escalaram têm território estreito e reconhecível. Os que listam tudo travam na faixa dos 60 mil apesar de milhares de posts. Se o objetivo é ser lembrado como oncologista, o conteúdo precisa convergir para isso — mesmo com portas de entrada amplas.</p>
+      </div>
+      <div class="rec">
+        <p class="eyebrow">Risco</p>
+        <h3>Urologia está no radar do CFM</h3>
+        <p>A urologia é uma das sete especialidades mais envolvidas em irregularidades de publicidade médica em redes sociais, ao lado de cirurgia plástica, dermatologia e nutrologia. Qualquer investimento precisa nascer com as regras de publicidade médica embutidas no processo de aprovação — sem antes e depois, sem promessa de resultado, sem autopromoção sensacionalista.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>Metodologia e limites</h2>
+      <p class="eyebrow">Leia antes de decidir</p>
+    </div>
+    <div class="prose">
+      <p>Triagem de mais de 60 perfis de urologistas brasileiros por múltiplos vetores de busca — nicho clínico, cidade, plataforma e termo de conteúdo — até a lista de maiores parar de trazer nomes novos. Os números de seguidores e publicações vêm dos dados públicos dos próprios perfis, indexados em buscadores na data do levantamento.</p>
+    </div>
+
+    <div class="note">
+      <p><strong>Sobre engajamento — importante:</strong> as plataformas pagas de auditoria (HypeAuditor, NotJustAnalytics, SocialBlade) estão inacessíveis a partir deste ambiente, e o Instagram bloqueia leitura direta de curtidas e comentários por post. <strong>Portanto, as taxas de engajamento aqui são classificações estimadas, não medições.</strong> Elas se apoiam em indicadores verificáveis: razão entre curtidas acumuladas e seguidores no TikTok, visualizações de vídeos noticiadas na imprensa, e eficiência de conteúdo — seguidores por publicação, que calculei para cada perfil. Se a decisão de investimento depender de taxa de engajamento exata, vale contratar uma auditoria pontual; é barato e resolve em poucos dias.</p>
+    </div>
+
+    <details>
+      <summary>Outras ressalvas</summary>
+      <div class="prose">
+        <ul>
+          <li><strong>Frequência de Stories não é pública.</strong> Só o feed é auditável de fora. A cadência de Stories descrita aqui é inferida a partir do volume de feed e do padrão de operação de cada perfil. Para medir de verdade: uma semana de monitoramento manual dos seis perfis.</li>
+          <li><strong>Dr. Eduardo Miranda aparece com números divergentes</strong> — de 610 mil a 750 mil seguidores, conforme a data da fonte. Adotei aproximadamente 690 mil, o valor mais citado. Ele também mantém contas satélite, o que fragmenta a leitura da audiência total.</li>
+          <li><strong>Contagens são fotografias.</strong> Perfis nessa faixa variam milhares de seguidores por semana. Trate as ordens de grandeza como firmes e os números exatos como aproximações.</li>
+          <li><strong>O recorte é Instagram.</strong> Urologistas com forte presença em YouTube ou consultório sem rede social relevante podem ser referências clínicas maiores sem aparecer aqui.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <footer>
+    <span>Levantamento realizado em 19 de agosto de 2026</span>
+    <span>Fontes: perfis públicos do Instagram e TikTok, imprensa e portais médicos</span>
+  </footer>
+
+</div>
