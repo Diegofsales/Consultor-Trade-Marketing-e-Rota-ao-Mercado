@@ -102,6 +102,10 @@ ask TELEGRAM_ALLOWED_USERS "Seu Telegram user ID (descubra com o bot @userinfobo
 note "── Voz ──"
 ask GROQ_API_KEY       "Chave Groq p/ STT — grátis em https://console.groq.com/keys"
 ask ELEVENLABS_API_KEY "Chave ElevenLabs p/ TTS"
+# NOTA: ELEVENLABS_VOICE_ID NÃO é lida pelo Hermes — é variável auxiliar deste
+# script (lembra sua escolha entre execuções). O Hermes lê o voice_id do
+# config.yaml (tts.elevenlabs.voice_id), aplicado na etapa 5 abaixo.
+# Para trocar a voz depois:  hermes config set tts.elevenlabs.voice_id <novo-id>
 ask ELEVENLABS_VOICE_ID "Voice ID da ElevenLabs (a voz 'mordomo britânico' que escolher)" opcional "pNInz6obpgDQGcFmaJgB"
 note "── LLM (o cérebro) ──"
 ask OPENROUTER_API_KEY "Chave OpenRouter (Enter p/ pular e configurar depois com 'hermes model')" opcional
