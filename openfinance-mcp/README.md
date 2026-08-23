@@ -6,9 +6,31 @@ Servidor MCP **somente leitura** que conecta os dados bancários do Open Finance
 
 ---
 
-## Fase 0 — Obter acesso aos seus dados (≈ 30 minutos)
+## Fronteira de automação — o que um agente pode fazer por você
 
-Esta é a única parte que **precisa ser feita por você**: envolve sua identidade, seu login bancário e o consentimento formal do Open Finance. Eu não posso (nem devo) fazer isso no seu lugar — em nenhum momento eu devo ver a senha do seu banco.
+Objetivo do projeto: **nada de trabalho manual, exceto o que é impossível automatizar.** Onde essa linha cai:
+
+| Etapa | Automatizável? | Por quê |
+|---|---|---|
+| Conectar bancos no Meu Pluggy | ❌ **Não** | Exige você se autenticar no **seu banco**, com senha e MFA. É um ato de consentimento legal do titular. |
+| Autorização OAuth por banco | ❌ **Não** | Mesmo motivo: o fluxo termina numa tela do banco que só você pode aprovar. |
+| Criar conta no Dashboard Pluggy | ⚠️ Parcial | Aceite de termos e verificação de e-mail estão atrelados à sua identidade. |
+| Escrever o `.env` e gerar o token | ✅ **Sim** | `npm run setup` — inclusive em modo não-interativo. |
+| Validar credenciais e conexões | ✅ **Sim** | `npm run check`. |
+| Instalar, compilar, testar | ✅ **Sim** | `npm install && npm test`. |
+| Provisionar o servidor e publicar | ✅ **Sim** | Script de provisionamento na Fase 5 (roda via SSH). |
+| Comprar o VPS | ❌ **Não** | Pagamento com seu cartão. |
+| Ligar o conector no ChatGPT | ❌ **Não** | Duas telas na interface do ChatGPT, ~2 minutos. |
+
+**Por que os "não" são irredutíveis:** o Open Finance foi desenhado para que **só o titular** autorize o compartilhamento, autenticando-se na própria instituição. Qualquer ferramenta que "automatizasse" isso precisaria da senha do seu banco — exatamente o que este projeto existe para evitar. Não é limitação de engenharia; é a garantia de segurança funcionando.
+
+**Saldo prático:** ~15 minutos de cliques seus, uma única vez. Todo o resto é script.
+
+---
+
+## Fase 0 — Obter acesso aos seus dados (≈ 15 minutos de cliques)
+
+Os Passos 1 a 3 abaixo são os irredutíveis da tabela acima: envolvem sua identidade e seu login bancário. Em nenhum momento eu — ou o ChatGPT — devemos ver a senha do seu banco.
 
 ### Passo 1 — Conectar seus bancos no Meu Pluggy
 
@@ -53,19 +75,25 @@ E descreve o Meu Pluggy como *"a **free** consumer application"*.
 3. **Repita uma vez para cada banco conectado** (por banco, não por conta).
 4. Anote o `itemId` gerado em cada autorização — serão 6, um por banco.
 
-### Passo 4 — Preencher o `.env`
+### Passo 4 — Configurar (automatizado)
+
+Não edite arquivo nenhum à mão. Rode:
 
 ```bash
 cd openfinance-mcp
-cp .env.example .env
-# edite o .env e preencha PLUGGY_CLIENT_ID, PLUGGY_CLIENT_SECRET e PLUGGY_ITEM_IDS
+npm install
+npm run setup
 ```
 
-Gere também o token que protegerá a URL do servidor:
+O script pede as três credenciais, **gera o token do servidor sozinho** (32 bytes aleatórios), escreve o `.env` com permissão `600` (só você lê) e confere se cada valor tem cara de válido.
+
+**Para um agente rodar sem interação** (ChatGPT/Codex, script de deploy):
 
 ```bash
-openssl rand -hex 32   # cole o resultado em MCP_PATH_TOKEN
+PLUGGY_CLIENT_ID=xxx PLUGGY_CLIENT_SECRET=yyy PLUGGY_ITEM_IDS=a,b npm run setup
 ```
+
+Sem terminal interativo e sem essas variáveis, o script **falha com instrução clara** em vez de travar esperando digitação.
 
 ### Passo 5 — Validar
 

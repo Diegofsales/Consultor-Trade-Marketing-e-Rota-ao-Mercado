@@ -222,9 +222,11 @@ Todas as respostas usam o **envelope padrão** (Seção 7.3). Nomes em inglês (
 
 > Executor: conclua e valide cada fase antes da próxima. Commits pequenos e frequentes.
 
-**F0 — Preparação (tarefas do Diego, sem código)**
-Criar conta em https://dashboard.pluggy.ai → obter `CLIENT_ID`/`CLIENT_SECRET` → conectar os bancos (via demo/widget da Pluggy) → anotar os `itemIds`.
-✅ *Aceite:* Diego tem as 3 credenciais em mãos.
+**F0 — Preparação**
+Conectar os bancos em https://meu.pluggy.ai → criar Development Application em https://dashboard.pluggy.ai → autorizar via OAuth (uma vez por banco) → anotar `CLIENT_ID`, `CLIENT_SECRET` e os `itemIds`.
+✅ *Aceite:* `npm run setup && npm run check` roda sem erro e lista os 6 bancos.
+
+> **Regra de automação do projeto:** nenhuma etapa é manual por preguiça. Os passos manuais da F0 são **irredutíveis por desenho regulatório** — o Open Finance exige que o titular se autentique na própria instituição, e automatizar isso exigiria a senha do banco, que é justamente o que o projeto evita. Toda etapa automatizável **deve** ser script, e todo script **deve** funcionar sem terminal interativo (valores por variável de ambiente), para que um agente possa executá-lo. Ver a tabela "Fronteira de automação" no README.
 
 **F1 — Fundação**
 Repo Node+TS strict, eslint, vitest; `config.ts` com zod; `providers/pluggy.ts` usando `pluggy-sdk`; script `npm run check` que autentica e lista as contas no terminal (com mascaramento já aplicado).

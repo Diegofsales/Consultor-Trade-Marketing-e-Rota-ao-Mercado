@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "setup": "tsx src/scripts/setup.ts",
     "check": "tsx src/scripts/check.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
