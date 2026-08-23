@@ -50,15 +50,18 @@ A maior parte das perguntas ("quanto gastei com combustível em julho?") é resp
 
 ---
 
-## 2. Premissas (confirmar com o Diego antes da Fase 5)
+## 2. Decisões confirmadas (2026-08-23)
 
-| # | Premissa assumida | Se for diferente, o que muda |
+| # | Decisão | Detalhe |
 |---|---|---|
-| P1 | Uso **pessoal, usuário único** (as contas do próprio Diego). | Multiusuário exige OAuth completo e isolamento por usuário — adiaria o projeto. Não implementar sem pedido explícito. |
-| P2 | "Hermes" é um cliente de chat compatível com MCP (ex.: app da Nous Research). | Só muda a Seção 9.3. O servidor não muda. |
-| P3 | Diego criará conta na Pluggy (há camada gratuita para desenvolvedores) e conectará seus bancos. | Sem Pluggy, alternativa é outro agregador (Belvo, Klavi) — muda só `providers/`. |
-| P4 | Orçamento de hospedagem: até ~US$5/mês OU rodar localmente com túnel gratuito. | Define a escolha na Fase 5 (duas opções já previstas). |
-| P5 | Idioma das respostas: português; moeda: BRL; fuso: America/Sao_Paulo. | Constantes em `config.ts`. |
+| D1 | Uso **pessoal, usuário único** | Multiusuário exigiria OAuth completo e isolamento por usuário. Fora de escopo. |
+| D2 | **Hermes = Hermes Agent (Nous Research)**, open source | Suporta MCP stdio **e** HTTP remoto, com OAuth 2.1 PKCE. Config em YAML (`mcp_servers`). Ver Seção 9.3. |
+| D3 | Acesso à Pluggy via **Meu Pluggy** (rota gratuita pessoal) | `meu.pluggy.ai` conecta os bancos; `dashboard.pluggy.ai` gera a Development Application. O plano comercial da Pluggy é caro e desnecessário aqui. |
+| D4 | Hospedagem: **Hostinger VPS KVM 1**, datacenter São Paulo | Ver Seção 12 para a análise. Dados financeiros permanecem em território brasileiro. |
+| D5 | Bancos: **Itaú, Nubank, Santander, BTG, Sicredi, Stone** | Todos com conector Pluggy. Stone/Sicredi PJ inclusos. |
+| D6 | Escopo v1: conta corrente + **cartão de crédito** + investimentos | Cartão confirmado viável (`fetchCreditCardBills` existe no SDK). |
+| D7 | **DDA fora da v1 — indisponível tecnicamente** | Ver Seção 13. Não é escolha de escopo: o dado não existe no Open Finance. |
+| D8 | Português; BRL; America/Sao_Paulo | Constantes em `config.ts`. |
 
 ---
 
@@ -258,17 +261,32 @@ Conectar Hermes (Seção 9.3); revisão final: `npm audit` limpo, logs sem PII (
 ### 9.2 ChatGPT
 Requisitos do ChatGPT: servidor **remoto via HTTPS** (não aceita processo local) e conta Plus/Pro com **modo desenvolvedor** habilitado (Settings → Connectors → Advanced → Developer mode). Adicionar conector apontando para a URL acima. Sem OAuth na v1 — a autenticação é o token embutido na URL (secreto, transportado sob TLS).
 
-### 9.3 Hermes
-Se aceitar MCP remoto: usar a **mesma URL** do ChatGPT. Se for app desktop com config local de servidores MCP (padrão `mcpServers` em JSON):
+### 9.3 Hermes Agent (Nous Research) — confirmado
+Hermes usa **YAML**, não JSON, com a chave raiz `mcp_servers` (config em `~/.hermes/`). Suporta stdio e HTTP remoto no mesmo arquivo, com descoberta automática de tools na inicialização.
 
-```json
-{ "mcpServers": { "openfinance": {
-    "command": "node",
-    "args": ["/caminho/openfinance-mcp/dist/index.js", "--stdio"],
-    "env": { "DB_PATH": "/caminho/openfinance-mcp/data/finance.db" } } } }
+**Opção A — remoto (mesma URL do ChatGPT, recomendado):**
+```yaml
+mcp_servers:
+  openfinance:
+    url: "https://<host>/mcp/<MCP_PATH_TOKEN>"
+    enabled: true
+    timeout: 120
 ```
 
-*(Confirmar com o Diego qual Hermes é — ver P2. Só esta subseção depende disso.)*
+**Opção B — local via stdio (se Hermes rodar na mesma máquina):**
+```yaml
+mcp_servers:
+  openfinance:
+    command: "node"
+    args: ["/caminho/openfinance-mcp/dist/index.js", "--stdio"]
+    env:
+      DB_PATH: "/caminho/openfinance-mcp/data/finance.db"
+    enabled: true
+```
+
+Após editar, recarregar com `/reload-mcp`. Hermes também suporta `auth: oauth` (OAuth 2.1 PKCE) e mTLS (`client_cert`/`client_key`) — caminho de evolução natural para substituir o token de caminho na v2.
+
+⚠️ **Atenção de segurança:** Hermes é um agente que executa comandos de shell e se auto-modifica. Conecte-o a este servidor apenas em máquina de confiança. O servidor ser read-only limita o dano máximo: um agente comprometido consegue *ler* dados financeiros, nunca movimentar dinheiro.
 
 ---
 
@@ -285,9 +303,60 @@ Se aceitar MCP remoto: usar a **mesma URL** do ChatGPT. Se for app desktop com c
 
 ---
 
-## 11. Perguntas abertas para o Diego (respondê-las refina, não bloqueia)
+## 12. Hospedagem — decisão e justificativa
 
-1. **Qual "Hermes" exatamente?** (nome do app/fabricante ou link) → define a Seção 9.3.
-2. **Hospedagem:** prefere pagar ~US$5/mês por estabilidade 24/7 (Railway/Fly.io) ou rodar de graça na sua máquina com Cloudflare Tunnel (funciona só com o computador ligado)?
-3. **Quais bancos** você vai conectar? (só para validar cobertura na Pluggy antes de começar)
-4. **Cartão de crédito e investimentos** entram na v1, ou começamos só com conta corrente e evoluímos?
+**Produto escolhido: Hostinger VPS, plano KVM 1** (1 vCPU, 4 GB RAM, 50 GB NVMe), com o **datacenter de São Paulo** selecionado na criação.
+
+**Por que VPS e não hospedagem compartilhada:** a Hostinger vende hospedagem compartilhada (Premium/Business) muito mais barata, mas ela roda PHP em processos de vida curta. Este projeto precisa de um **processo Node.js permanentemente ativo** e de um **cron próprio** — só VPS entrega isso. Planos de hospedagem de site não servem, a qualquer preço.
+
+**Por que o KVM 1 e não maior:** um servidor MCP de usuário único, com SQLite local, consome pouquíssimo. 1 vCPU e 4 GB sobram com folga. Subir para KVM 2 seria pagar por capacidade ociosa.
+
+**Preço:** ~R$ 29,99/mês no contrato de 24 meses; renovação ~R$ 59,99/mês. Atenção ao compromisso longo para obter o preço promocional.
+
+### Vale mais a pena um internacional (Railway/Fly.io)?
+
+Resposta honesta: **os dois caminhos são defensáveis, e a Hostinger vence no seu caso.**
+
+| Critério | Hostinger VPS | Railway / Fly.io |
+|---|---|---|
+| Localização dos dados | 🟢 São Paulo — dados financeiros em solo brasileiro, latência baixa | 🟡 Exige escolher região BR explicitamente |
+| Pagamento | 🟢 BRL, sem IOF, nota fiscal brasileira | 🟡 USD, cartão internacional, IOF |
+| Suporte | 🟢 Português | 🔴 Inglês |
+| Manutenção de segurança | 🔴 **Você** atualiza o SO, configura firewall e TLS | 🟢 Plataforma cuida; sem SSH exposto |
+| Sem compromisso longo | 🔴 24 meses para o preço promocional | 🟢 Mensal |
+
+O único ponto realmente forte a favor dos internacionais é **manutenção de segurança**: num VPS, servidor desatualizado é problema seu, e isso pesa quando o servidor guarda dados bancários. **Isso é mitigável** e está previsto na Fase 5: `unattended-upgrades` ativado, SSH só por chave (senha desabilitada), firewall liberando apenas 80/443, e TLS automático via Caddy. Com esses quatro itens, o risco cai a um nível aceitável — e você fica com dados no Brasil, cobrança em reais e suporte em português.
+
+**Veredito:** siga com a Hostinger KVM 1 / São Paulo. Se em algum momento a manutenção do servidor virar incômodo, migrar para Fly.io é questão de horas — a aplicação não muda.
+
+---
+
+## 13. DDA e boletos — constatação técnica
+
+Verificado diretamente nas definições de tipo do `pluggy-sdk` 0.90.0 (métodos disponíveis e tipos de transação).
+
+| Dado | Disponível | Origem |
+|---|---|---|
+| Boleto **já pago** (linha digitável, juros, multa, desconto) | ✅ | `Transaction.paymentData.boletoMetadata` |
+| Fatura de cartão (total, vencimento, mínimo) | ✅ | `fetchCreditCardBills` |
+| Validade do consentimento Open Finance | ✅ | `fetchConsents` → `expiresAt` |
+| Empréstimos e financiamentos | ✅ | `fetchLoans` |
+| **DDA — boletos a vencer** | ❌ | **Não existe.** Nenhum método no SDK; fora do escopo do Open Finance Brasil. |
+
+**Causa raiz:** o DDA é serviço da Febraban/CIP. O compartilhamento regulado do Open Finance cobre extrato, cartão e operações de crédito — boletos a vencer não entraram no escopo. Nenhum agregador (Pluggy, Belvo, Klavi) entrega isso por essa via.
+
+**Encaminhamento para a v1:** implementar `list_upcoming_bills` derivando de (a) faturas de cartão em aberto e (b) transações recorrentes detectadas nos últimos 6 meses (mesmo estabelecimento, valor similar, periodicidade mensal). Cobre a pergunta prática "o que tenho a pagar este mês" sem depender do DDA. DDA real, se necessário, exige provedor especializado pago (ex.: TecnoSpeed PlugBank) — decisão de v2.
+
+---
+
+## 14. Estado da implementação
+
+| Fase | Estado |
+|---|---|
+| F0 — Credenciais Pluggy | ⏳ **Pendente — tarefa do Diego.** Runbook em `openfinance-mcp/README.md` |
+| F1 — Fundação | ✅ Implementada: config, provider, Pluggy, mascaramento, dinheiro em centavos, `npm run check`, 13 testes verdes, `npm audit` limpo |
+| F2 — Cache SQLite + sync | ⬜ Próxima |
+| F3 — Agregações | ⬜ |
+| F4 — Servidor MCP + tools | ⬜ |
+| F5 — Deploy Hostinger + ChatGPT | ⬜ |
+| F6 — Hermes + endurecimento | ⬜ |

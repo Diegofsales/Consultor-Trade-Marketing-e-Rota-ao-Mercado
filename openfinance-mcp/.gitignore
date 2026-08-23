@@ -1,0 +1,19 @@
+# Segredos — NUNCA commitar
+.env
+.env.*
+!.env.example
+
+# Dados financeiros locais — NUNCA commitar
+data/
+*.db
+*.db-journal
+*.sqlite
+
+# Build e dependências
+node_modules/
+dist/
+coverage/
+
+# Sistema
+.DS_Store
+*.log
