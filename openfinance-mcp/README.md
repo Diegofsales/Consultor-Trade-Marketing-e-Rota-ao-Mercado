@@ -158,5 +158,13 @@ Recomendo a opção 2 na v1 e revisitar a 1 quando o resto estiver no ar.
 - **Dinheiro em centavos inteiros.** Nunca `float`, para não acumular erro de arredondamento em somas.
 - **Logs sem dados pessoais.** Nunca registramos descrição, valor, estabelecimento ou número de conta.
 - **Segredos só em `.env`**, que está no `.gitignore` — junto com `data/` e qualquer `*.db`.
-- **Descrições de transação são texto de terceiros.** Qualquer estabelecimento escolhe o que escrever ali. Elas sempre voltam como *dado* dentro de JSON, nunca concatenadas em instruções para o modelo.
+- **Descrições de transação são texto de terceiros — e são sanitizadas na entrada.** Qualquer pessoa que te envia um Pix ou emite um boleto escolhe o texto que aparece no seu extrato; esse texto será lido por um modelo de IA, o que o torna o principal vetor de injeção de prompt do sistema. `sanitizeText` remove, antes de qualquer gravação: caracteres de controle e sequências ANSI, caracteres invisíveis (zero-width), overrides bidirecionais ("trojan source") e tags Unicode — cada classe coberta por teste com um ataque real. Além disso, tudo volta como *dado* dentro de JSON, truncado, nunca concatenado em instruções.
+
+### Conectando o Hermes com segurança
+
+O Hermes executa comandos de shell e se automodifica — é o cliente mais exposto a injeção. Regras:
+
+1. **Sempre no modo remoto** (URL HTTPS), nunca stdio na mesma máquina do servidor — em stdio, o Hermes alcança o `.env` e a credencial-mestre da Pluggy.
+2. **Mantenha o modo de aprovação de comandos shell ativo** no Hermes. Não rode como root.
+3. **Regra de ouro operacional:** se uma resposta baseada em dados bancários "sugerir" uma ação (instalar algo, acessar uma URL, transferir dinheiro), trate como ataque — instrução legítima nunca vem de dentro de uma descrição de transação.
 - **LGPD.** Os dados ficam no seu servidor. `npm run wipe` apaga tudo; o consentimento é revogável no app do banco.

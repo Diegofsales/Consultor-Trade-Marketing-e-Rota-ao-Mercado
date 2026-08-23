@@ -112,16 +112,21 @@ export class PluggyProvider implements Provider {
 
   async listarTransacoes(contaId: string, de: string, ate: string): Promise<TransacaoCanonica[]> {
     const transacoes: TransacaoCanonica[] = []
-    let page = 1
-    let totalPaginas = 1
+    let cursor: string | undefined
 
-    // Paginamos até o fim: o sync roda 1x/dia, então vale buscar tudo do período
-    // uma vez e responder do cache local depois.
+    // Paginação por CURSOR, não por número de página: se uma transação entra
+    // enquanto percorremos as páginas, a numeração desloca e uma transação pode
+    // ser pulada ou duplicada. Cursor é estável — em dado financeiro isso não é
+    // detalhe. (fetchTransactions por página está deprecated no SDK.)
     do {
-      const resposta = await this.chamar(`fetchTransactions`, () =>
-        this.client.fetchTransactions(contaId, { from: de, to: ate, page, pageSize: 500 }),
+      const resposta = await this.chamar(`fetchTransactionsCursor`, () =>
+        this.client.fetchTransactionsCursor(contaId, {
+          dateFrom: de,
+          dateTo: ate,
+          ...(cursor ? { after: cursor } : {}),
+        }),
       )
-      totalPaginas = resposta.totalPages ?? 1
+      cursor = resposta.next ?? undefined
 
       for (const t of resposta.results) {
         const transacao: TransacaoCanonica = {
@@ -146,8 +151,7 @@ export class PluggyProvider implements Provider {
 
         transacoes.push(transacao)
       }
-      page++
-    } while (page <= totalPaginas)
+    } while (cursor)
 
     return transacoes
   }
@@ -157,15 +161,27 @@ export class PluggyProvider implements Provider {
       this.client.fetchCreditCardBills(contaId),
     )
 
-    return resposta.results.map((b) => ({
-      id: b.id,
-      contaId,
-      vencimento: b.dueDate ? new Date(b.dueDate).toISOString().slice(0, 10) : '',
-      fechamento: null,
-      totalCents: toCents(b.totalAmount),
-      minimoCents: b.minimumPaymentAmount != null ? toCents(b.minimumPaymentAmount) : null,
-      paga: Boolean(b.allowsInstallments === false && b.totalAmount === 0),
-    }))
+    return resposta.results
+      .map((b) => {
+        // "Paga" é DERIVADA dos pagamentos registrados na fatura, nunca
+        // inferida de heurística: soma dos payments >= total da fatura.
+        const pagoCents = b.payments?.reduce((soma, p) => soma + toCents(p.amount), 0) ?? 0
+        const totalCents = toCents(b.totalAmount)
+        return {
+          id: b.id,
+          contaId,
+          vencimento: b.dueDate ? new Date(b.dueDate).toISOString().slice(0, 10) : '',
+          fechamento: b.billClosingDate
+            ? new Date(b.billClosingDate).toISOString().slice(0, 10)
+            : null,
+          totalCents,
+          minimoCents: b.minimumPaymentAmount != null ? toCents(b.minimumPaymentAmount) : null,
+          paga: totalCents > 0 && pagoCents >= totalCents,
+        }
+      })
+      // Mais recente primeiro, por contrato — quem consome não deve depender
+      // da ordem que a API escolher devolver.
+      .sort((a, b) => b.vencimento.localeCompare(a.vencimento))
   }
 
   async listarInvestimentos(itemIds: readonly string[]): Promise<InvestimentoCanonico[]> {

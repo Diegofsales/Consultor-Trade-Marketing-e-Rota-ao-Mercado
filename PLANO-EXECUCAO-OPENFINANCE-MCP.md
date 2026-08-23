@@ -148,6 +148,16 @@ sync_log(id PK, started_at, finished_at, status, error_code, items_ok, items_fai
 
 **Regra de ouro:** dinheiro é `INTEGER` em **centavos**. Proibido `float` para valores monetários em qualquer ponto do código (evita erro clássico de arredondamento binário).
 
+### Convenções financeiras fixadas em auditoria (o executor NÃO pode variar)
+
+1. **Datas de transação:** a Pluggy entrega `date` como instante ISO ancorado em meia-noite **UTC**. A data canônica é o recorte UTC (`toISOString().slice(0,10)`) — **nunca** converter para fuso local, o que deslocaria transações para o dia anterior e mudaria totais mensais. Teste com fixture pinando esse comportamento é obrigatório na F2.
+2. **Sinal do cartão de crédito:** `saldoCents` de conta `CARTAO_CREDITO` é o valor **devido** como a API o entrega; cartão **nunca** entra em soma de patrimônio/saldo consolidado (só em visões de dívida). Qualquer agregação que misture os dois tipos é bug.
+3. **Fatura "paga"** é derivada exclusivamente de `payments` da própria fatura (soma dos pagamentos ≥ total) — nunca de heurística sobre outros campos.
+4. **Paginação de transações:** exclusivamente por **cursor** (`fetchTransactionsCursor`). Paginação numerada desloca itens quando dados chegam entre páginas — pode pular ou duplicar transação.
+5. **Listas ordenadas por contrato,** não pela ordem que a API devolver (faturas: vencimento desc; transações: data desc).
+6. **Todo schema zod de tool usa `.strict()`** — parâmetro desconhecido é erro, não é ignorado.
+7. **Sanitização de texto de terceiros** (`sanitizeText`) acontece na normalização, antes do SQLite: remove controles C0/C1, sequências ANSI, zero-width, overrides bidirecionais e tags Unicode. Nenhum caminho de saída depende de lembrar de sanitizar.
+
 ---
 
 ## 6. Contrato das ferramentas MCP (o "cardápio" da IA)
@@ -244,9 +254,19 @@ Repo Node+TS strict, eslint, vitest; `config.ts` com zod; `providers/pluggy.ts` 
 `mcp/server.ts` + as 9 tools da Seção 6 + transporte stdio.
 ✅ *Aceite:* todas as tools funcionam no MCP Inspector (`npx @modelcontextprotocol/inspector`); resposta de cada tool respeita o teto de tamanho; `stale:true` aparece quando o sync é mais velho que 26h.
 
-**F5 — Remoto + ChatGPT**
-`transport/http.ts` (Streamable HTTP do SDK) + token de caminho + rate limit; deploy em **Railway ou Fly.io** (opção A, ~US$5/mês, estabilidade máxima, volume persistente para o SQLite) **ou** local + **Cloudflare Tunnel** (opção B, custo zero, exige máquina ligada) — Diego escolhe conforme P4; cron de sync ativo.
-✅ *Aceite:* `curl` remoto responde; URL sem token → 404; ChatGPT (modo desenvolvedor → conectores → adicionar servidor MCP remoto) lista as 9 tools e responde "qual meu saldo?" corretamente.
+**F5 — Remoto + ChatGPT (deploy: Hostinger VPS KVM 1, São Paulo — ver Seção 12)**
+`transport/http.ts` (Streamable HTTP do SDK) + token de caminho + rate limit; provisionamento por script idempotente executável via SSH (sem passos manuais no servidor); cron de sync ativo.
+
+*Hardening obrigatório do VPS e do transporte (auditoria de segurança):*
+1. **Fail-closed:** em modo `--http`, `MCP_PATH_TOKEN` ausente = processo recusa subir (no stdio ele é opcional). Comparação do token com `crypto.timingSafeEqual`, nunca `===`.
+2. **SO:** usuário dedicado sem sudo para o serviço; SSH somente por chave (senha desabilitada); `unattended-upgrades` ativo; `ufw` liberando só 80/443/SSH.
+3. **Egress allowlist:** firewall de SAÍDA permitindo apenas `api.pluggy.ai:443` (+ NTP/DNS/repositórios). Se qualquer componente for comprometido, exfiltração e download de payload ficam bloqueados na rede — a defesa mais barata e mais eficaz do servidor inteiro.
+4. **systemd:** `NoNewPrivileges=yes`, `ProtectSystem=strict`, `ProtectHome=yes`, `PrivateTmp=yes`, `ReadWritePaths=` apenas no diretório `data/`; restart automático.
+5. **TLS:** Caddy com HTTPS automático e HSTS; formato de log do Caddy **redigindo o caminho** (o token vive na URL — logs de acesso não podem gravá-lo em claro).
+6. **Transporte MCP:** proteção DNS-rebinding do SDK ativa (`allowedHosts` restrito ao domínio do servidor); sessões do Streamable HTTP com ids gerados pelo SDK.
+7. **Deploy:** `npm ci --omit=dev` (lockfile exato, nunca `npm install`); `npm run audit` como gate — vulnerabilidade moderada+ bloqueia o deploy.
+
+✅ *Aceite:* `curl` remoto responde; URL sem token → 404; token errado → 404 em tempo constante; ChatGPT (modo desenvolvedor → conectores) lista as 9 tools e responde "qual meu saldo?" corretamente; teste de egress: `curl https://example.com` de dentro do VPS falha.
 
 **F6 — Hermes + endurecimento**
 Conectar Hermes (Seção 9.3); revisão final: `npm audit` limpo, logs sem PII (inspecionar amostra real), README completo com os 10 passos de setup + troubleshooting; `npm run wipe` funcional.

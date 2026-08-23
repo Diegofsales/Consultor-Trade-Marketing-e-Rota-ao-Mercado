@@ -12,8 +12,11 @@ import { randomBytes } from 'node:crypto'
 import { existsSync, writeFileSync, chmodSync } from 'node:fs'
 import { createInterface } from 'node:readline/promises'
 import { stdin, stdout } from 'node:process'
+import { fileURLToPath } from 'node:url'
 
-const ENV_PATH = new URL('../../.env', import.meta.url).pathname
+// fileURLToPath, não .pathname: pathname devolve caminho percent-encoded e
+// quebra em diretórios com espaço (e no Windows).
+const ENV_PATH = fileURLToPath(new URL('../../.env', import.meta.url))
 
 type Campo = {
   chave: string
