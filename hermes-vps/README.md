@@ -67,6 +67,48 @@ tail -f ~/.hermes/logs/gateway.log # diagnóstico
 hermes model                       # trocar provedor/modelo de LLM
 ```
 
+## Segurança — modelo de ameaças e mitigações
+
+Este deployment reúne a "tríade letal" de prompt injection: **dados privados**
+(Gmail/Agenda) + **conteúdo não confiável** (corpo de emails, páginas web,
+transcrições de voz — inclusive de terceiros perto do microfone) + **canais de
+saída** (web, envio de email, terminal). Um email que o agente apenas *leia*
+pode conter instruções maliciosas. Defesa em camadas aplicada pelo script:
+
+| Camada | Controle | O que bloqueia |
+|---|---|---|
+| Identidade | Allowlists por ID numérico (Discord/Telegram) | Estranhos comandando o bot |
+| Instrução | Baseline no `SOUL.md`: email/web/voz = **dado**, não instrução; ação destrutiva/outbound exige clarify; fala ambígua no mic → perguntar | Injeção seguida cegamente; comando captado de terceiros |
+| Execução | `approvals.mode: smart` — comando perigoso pede aprovação no chat ("yes"/"no"); `cron_mode: deny` — agendados **nunca** auto-aprovam | Ação destrutiva originada de conteúdo injetado |
+| Rede | `ufw` entrada negada (gateway é 100% outbound); porta SSH da sessão detectada antes do enable | Superfície de ataque de entrada = zero |
+| SO | `unattended-upgrades` | CVEs conhecidos sem patch |
+| Segredos | `umask 077`, `.env` 600, `read -rs` (nada em tela/scrollback), validação de chaves sem token em argv (`-H @<(...)`) | Vazamento por arquivo, shoulder-surfing, `ps` |
+
+**Camada avançada (opcional):** `hermes egress setup` ativa o iron-proxy —
+egress default-deny com allowlist de hosts, bloqueio de IPs de metadados de
+nuvem e proteção a DNS-rebinding. Fecha exfiltração para hosts arbitrários;
+exige manter a allowlist. Combine com `terminal.backend: docker` para isolar a
+execução de comandos (atenção: skills que rodam CLIs no host, como
+`google-workspace`, precisam das credenciais dentro do container).
+
+**Higiene contínua:** rode `hermes skills audit` antes de instalar skills de
+terceiros; não rode `/reload-mcp` à toa (invalida o prompt cache — a próxima
+mensagem repaga todos os tokens de schema); revise `~/.hermes/logs/gateway.log`
+ocasionalmente.
+
+## Registro de auditoria (v2)
+
+Revisão dev: corrigidos `sed` injetável no upsert de segredos (metacaracteres
+corrompiam o `.env`), aborto do provisionamento por falha cosmética no patcher
+YAML e por `gateway start` sem guarda em VPS sem systemd, `start`→`restart`
+(re-execução aplica config nova), fallback quando `uv` ausente, validação viva
+das 4 credenciais contra as APIs reais (mata a fricção do token com typo
+descoberto dias depois), validação de formato dos IDs de allowlist, guardas
+`set -e`/`set -u` (`[ -n ] &&` em nível de script, `SSH_CONNECTION` ausente).
+Revisão de segurança: itens da tabela acima. Testes: sintaxe, upsert com
+segredos hostis (`| & \` aspas), process substitution através de função,
+patcher com `config.yaml` inexistente, detecção de porta SSH — todos verdes.
+
 ## Avisos
 
 - **Call aberta = microfone aberto.** No canal de voz não há wake word nem filtro
