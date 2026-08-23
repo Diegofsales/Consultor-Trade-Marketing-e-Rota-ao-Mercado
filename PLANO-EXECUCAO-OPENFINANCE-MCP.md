@@ -56,7 +56,7 @@ A maior parte das perguntas ("quanto gastei com combustível em julho?") é resp
 |---|---|---|
 | D1 | Uso **pessoal, usuário único** | Multiusuário exigiria OAuth completo e isolamento por usuário. Fora de escopo. |
 | D2 | **Hermes = Hermes Agent (Nous Research)**, open source | Suporta MCP stdio **e** HTTP remoto, com OAuth 2.1 PKCE. Config em YAML (`mcp_servers`). Ver Seção 9.3. |
-| D3 | Acesso à Pluggy via **Meu Pluggy** (rota gratuita pessoal) | `meu.pluggy.ai` conecta os bancos; `dashboard.pluggy.ai` gera a Development Application. O plano comercial da Pluggy é caro e desnecessário aqui. |
+| D3 | Acesso à Pluggy via **Meu Pluggy / Connector 200** (gratuito para dados próprios) | `meu.pluggy.ai` conecta os bancos; `dashboard.pluggy.ai` gera a Development Application. O trial de 15 dias do Dashboard **não bloqueia uso pessoal** — o que é pago é servir dados de terceiros (plano comercial a partir de ~R$ 2.500/mês, desnecessário aqui). Confirmado no README oficial: *"you will be able to pull information after expires anyway"*. |
 | D4 | Hospedagem: **Hostinger VPS KVM 1**, datacenter São Paulo | Ver Seção 12 para a análise. Dados financeiros permanecem em território brasileiro. |
 | D5 | Bancos: **Itaú, Nubank, Santander, BTG, Sicredi, Stone** | Todos com conector Pluggy. Stone/Sicredi PJ inclusos. |
 | D6 | Escopo v1: conta corrente + **cartão de crédito** + investimentos | Cartão confirmado viável (`fetchCreditCardBills` existe no SDK). |

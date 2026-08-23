@@ -27,7 +27,24 @@ Esta é a única parte que **precisa ser feita por você**: envolve sua identida
 3. Na página da sua Application, crie uma **Development Application**.
 4. Anote o `client_id` e o `client_secret` gerados.
 
-> ⚠️ **Ponto a validar já no Passo 2:** o Dashboard inicia com um trial de 15 dias. A documentação do Meu Pluggy indica que o acesso aos dados continua após o trial, mas **confirme isso no painel** antes de investirmos em hospedagem. Se virar cobrança, me avise — trocar de agregador custa reescrever um único arquivo (`src/providers/`).
+### Sobre o "trial de 15 dias" — leia antes de se assustar
+
+Ao criar a conta no Dashboard, aparece um **trial de 15 dias**. Ele **não se aplica ao nosso caso**. O que separa grátis de pago na Pluggy não é o tempo, é **de quem são os dados**:
+
+| Uso | Situação após os 15 dias |
+|---|---|
+| **Seus próprios dados** (nosso caso), via conector MeuPluggy | 🟢 Continua funcionando, sem custo |
+| **Dados de clientes seus** (app comercial) | 🔴 Conexões pausam até ativar um plano pago |
+
+O próprio README oficial do Meu Pluggy diz, literalmente:
+
+> *"you will begin a 15 days trial (Don't worry you will be able to pull information after expires anyway)"*
+
+E descreve o Meu Pluggy como *"a **free** consumer application"*.
+
+**Ainda assim, confira uma coisa no painel** (leva 30 segundos): garanta que o conector que você adicionou é o **MeuPluggy** (também chamado de **Connector 200**) e não um conector direto do banco. É esse conector que carrega a gratuidade — ele reaproveita a conexão que já existe na sua conta do Meu Pluggy, em vez de abrir uma conexão comercial nova.
+
+**Fio de alarme:** se em algum momento o painel exigir cartão de crédito para continuar puxando dados, pare e me avise. Trocar de agregador significa reescrever **um único arquivo** (`src/providers/pluggy.ts`) — todo o resto do sistema conversa com a interface `Provider`, não com a Pluggy.
 
 ### Passo 3 — Autorizar via OAuth (uma vez por banco)
 
