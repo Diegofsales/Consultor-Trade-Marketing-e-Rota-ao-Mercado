@@ -286,7 +286,35 @@ mcp_servers:
 
 Após editar, recarregar com `/reload-mcp`. Hermes também suporta `auth: oauth` (OAuth 2.1 PKCE) e mTLS (`client_cert`/`client_key`) — caminho de evolução natural para substituir o token de caminho na v2.
 
-⚠️ **Atenção de segurança:** Hermes é um agente que executa comandos de shell e se auto-modifica. Conecte-o a este servidor apenas em máquina de confiança. O servidor ser read-only limita o dano máximo: um agente comprometido consegue *ler* dados financeiros, nunca movimentar dinheiro.
+⚠️ **Por que remoto é obrigatório para o Hermes, não apenas preferível.**
+
+Hermes executa comandos de shell na máquina onde roda e se automodifica. Isso não permite burlar o read-only — as travas da Seção 9.4 valem para ele — mas muda **onde as credenciais ficam expostas**:
+
+| Modo | Credenciais ao alcance do Hermes | Pior cenário |
+|---|---|---|
+| stdio (mesma máquina) | `.env` com `PLUGGY_CLIENT_SECRET` | Lê o arquivo direto e obtém a credencial-mestre, contornando as tools |
+| **Remoto (adotado)** | Nenhuma — só a URL com o token | Acesso às 9 tools de leitura, nada além |
+
+**Decisão: usar sempre o modo remoto (Opção A) para o Hermes.** A Opção B fica documentada apenas para depuração local, com `.env` temporário e credenciais descartáveis.
+
+### 9.4 Cadeia de acesso — o que cada parte realmente pode fazer
+
+| Chave | Quem possui | Poder |
+|---|---|---|
+| Senha do banco | Só o usuário e o banco | Total (movimenta dinheiro) |
+| Consentimento Open Finance | Pluggy, autorizado pelo titular | **Somente leitura**, com prazo e revogável |
+| `client_id`/`client_secret` Pluggy | Somente o servidor (`.env`) | Ler os dados via API |
+| Tools MCP | ChatGPT e Hermes | Chamar 9 funções de leitura |
+
+**Duas travas independentes impedem movimentação de dinheiro:**
+1. **Software:** a interface `Provider` não declara nenhum método de escrita.
+2. **Regulatória:** o consentimento concedido é de *compartilhamento de dados*. Iniciação de pagamento exige consentimento separado e específico, aprovado pelo titular por operação.
+
+A trava 2 é a que importa em uma revisão de segurança: **mesmo com o código totalmente comprometido e as credenciais Pluggy vazadas, não é possível movimentar dinheiro** — a instituição recusa, porque o consentimento não autoriza. A garantia não depende da corretude deste código.
+
+**Revogação, do mais amplo ao mais restrito:** revogar o consentimento no app do banco (corta tudo) → rotacionar `client_id`/`client_secret` no dashboard Pluggy → rotacionar `MCP_PATH_TOKEN` (corta só o acesso das IAs).
+
+**Exposição residual real:** os dados financeiros *são* enviados ao provedor do modelo (OpenAI/Nous) quando o usuário faz perguntas. Isso é privacidade, não risco de perda financeira, e é mitigado pela política de agregar em código (Seção 7.3): sai `{"Marketing": "R$ 2.130,44"}`, não 500 transações.
 
 ---
 
